@@ -98,18 +98,21 @@ int main() {
 int mainMenu() {
     int myNum;
     do{ 
-    printf("Welcome! Please choose one of the following options:\n\
-    1. Find Nearest shop\n\
-    2. List product cheaper than a price\n\
-    3. Add a new product to the store\n\
-    4. Process a Purchase\n\
-    5. Draw a figure of the prices\n\
-    6. Exit\n");
-    scanf("%d", &myNum);
+        printf("Welcome! Please choose one of the following options [1-6]:\n\
+        1. Find Nearest shop\n\
+        2. List product cheaper than a price\n\
+        3. Add a new product to the store\n\
+        4. Process a Purchase\n\
+        5. Draw a figure of the prices\n\
+        6. Exit\n");
+        if (scanf("%d", &myNum) != 1){
+            printf("Input is not an integer, please try again.");
+            continue;
+        };
     } 
-    while (myNum >=1 && myNum <=6);
+    while ((myNum <1) || (myNum >6));
     
-    // printf("%d\n",myNum);
+    //  printf("%d\n",myNum);
     return 1;
 }
 
@@ -231,7 +234,7 @@ double discountedPrice(double price) {
     Takes into account the discounted products in the DISCOUNTED constant array.
 */
 double getPriceBySku(int sku) {
-
+    return 0.0;
 }
 
 
