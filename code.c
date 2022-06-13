@@ -23,7 +23,7 @@
 const double SHOP_LOCATION_X = 4.5;
 const double SHOP_LOCATION_Y = 3.8;
 // the name of the file that contains all the products
-const char FILE_NAME[] = "products.txt";
+const char FILE_NAME[] =  "products.txt" ;
 // SKUs of products that have 15% discount
 const int DISCOUNTED[7] = { 27638, 72646, 39044, 50948, 52363, 37462, 38511 };
 
@@ -294,63 +294,55 @@ void listProductsCheaperThan(double price) {
     If the product is added succesfully, RETURNS 1, otherwise RETURNS 0
 */
 int addProduct(int sku, double price) {
-    char nItems[10];
-    printf("sku:%d\tprice:%.2lf\n",sku,price);
     if (getPriceBySku(sku)==-1){
+        #define MAX 256
+        char nItems[10];
+        FILE *fptr1, *fptr2;
+        int lno = 0, linectr = 0;
+        char str[MAX];        
+        char temp[] = "temp.txt";
         char skuPrice[20];
-        printf("SKU(%d) does not exist\n",sku);
-        FILE *fp = fopen("test.txt"/* FILE_NAME */, "r+");
-        if(fp == NULL) {
-            perror("Unable to open file");
-            exit(1);
+        fptr1 = fopen(FILE_NAME, "r");
+        if (!fptr1) 
+        {
+            printf("Unable to open the input file!!\n");
+            return 0;
         }
-        fseek(fp,0,SEEK_SET);
-        fscanf(fp, "%[^\n]", nItems);
-        printf("nItems:%s\n",nItems);
-        sprintf( nItems,"%d",atoi(nItems)+1);
-        printf("nItems++:%s\n",nItems);
-        fputs(nItems,fp);
+        fptr2 = fopen(temp, "w");
+        if (!fptr2) 
+        {
+            printf("Unable to open a temporary file to write!!\n");
+            fclose(fptr1);
+            return 0;
+        }
+        fseek(fptr1,0,SEEK_SET);
+        fscanf(fptr1, "%[^\n]", nItems);
+        sprintf( nItems,"%d\n",atoi(nItems)+1);
+        fseek(fptr1,0,SEEK_SET);
+        strcpy(str, "\0");
+        while (!feof(fptr1)) 
+        {
+            fgets(str, MAX, fptr1);
+                if (lno == 0 )
+                {
+                    fprintf(fptr2, "%s", nItems);
+                    lno++;
+                } 
+                else  
+                {
+                    fprintf(fptr2, "%s", str);
+                } 
+
+                linectr++;
+        }
         sprintf( skuPrice,"\n%d %.2lf",sku,price);
-        printf("%s\n",skuPrice);
-        // fseek(fp,0,SEEK_END);
-        // fputs(skuPrice,fp);
+        fprintf(fptr2, "%s", skuPrice);
+        fclose(fptr1);
+        fclose(fptr2);
+        remove(FILE_NAME);
+        rename(temp, FILE_NAME);
         return 1;
     }
-    /* 
-    open file 
-    compare provided SKU with current SKUs
-        if unique 
-            add to file 
-            update number of products on top of the file
-            return 1
-        otherwise 
-            return 0
-        print error or success message in the mainMenu
-
-    */
- 
-
-        // char block[128];
-        // int numProducts = fgets(block, sizeof(block), fp);
-        // int items  = atoi(block); 
-        // printf("items:%d\n",items);
-        // char *ptr;
-        // // printf("items:%d\n", items);
-        // for (int i= 0 ; i<items;i++){
-        //     if (fgets(block,sizeof(block), fp) !=NULL)
-        //     {
-        //         char * token = strtok(block, " ");
-        // //         if (sku == atoi(token)){
-        // //             while( token != NULL ) {
-        // //                 // printf( "%s:", token ); //printing each token
-        // //                 token = strtok(NULL, " ");
-        // //                 // printf( "%s\n", token );
-        // //                 price = strtod(token,&ptr);
-        // //                 break;
-        // //             }
-        // //         }
-        //     }
-        // }
 
     return 0;
 }
