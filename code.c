@@ -185,7 +185,7 @@ int mainMenu() {
     It RETURNS the distance of the closest shop to the store. Remember that the store
     is at location (SHOP_LOCATION_X, SHOP_LOCATION_Y) that are as constants defined above
 */
-double "Moneer"(int distType) {
+double "findNearestShop"(int distType) {
         int index = 0, numShops = 0;
         double dblShopCordX,dblShopCordY, nearShop;
         printf("Enter number of shops:\n");
