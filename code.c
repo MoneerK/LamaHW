@@ -147,12 +147,27 @@ int mainMenu() {
         listProductsCheaperThan(price);
         break;
     case 3:
-        // printf("distance:%lf\n",euclideanDistance(3.0,2.0,5.0,4.0));
+        int addSku = 12345;
+        double addPrice = 5.55;
+        printf("What is the SKU of the product to be added?");
+        scanf("%d",&addSku);
+        printf("What is the price of the new product?");
+        scanf("%lf", &addPrice);
+
+        if (addProduct(addSku,addPrice)== 0){
+            //fail
+            printf("SKU(%d) is already added\n",addSku);
+
+        } else {
+            //success
+            printf("SKU(%d) is added successfully\n",addSku);
+        }
+    
         break;
     case 4:
     
         // printf("%d\n",isOnDiscount(509448));
-        printf("%lf",getPriceBySku(374612));
+        printf("%lf\n",getPriceBySku(374612));
 
         break;
     case 5:
@@ -279,6 +294,64 @@ void listProductsCheaperThan(double price) {
     If the product is added succesfully, RETURNS 1, otherwise RETURNS 0
 */
 int addProduct(int sku, double price) {
+    char nItems[10];
+    printf("sku:%d\tprice:%.2lf\n",sku,price);
+    if (getPriceBySku(sku)==-1){
+        char skuPrice[20];
+        printf("SKU(%d) does not exist\n",sku);
+        FILE *fp = fopen("test.txt"/* FILE_NAME */, "r+");
+        if(fp == NULL) {
+            perror("Unable to open file");
+            exit(1);
+        }
+        fseek(fp,0,SEEK_SET);
+        fscanf(fp, "%[^\n]", nItems);
+        printf("nItems:%s\n",nItems);
+        sprintf( nItems,"%d",atoi(nItems)+1);
+        printf("nItems++:%s\n",nItems);
+        fputs(nItems,fp);
+        sprintf( skuPrice,"\n%d %.2lf",sku,price);
+        printf("%s\n",skuPrice);
+        // fseek(fp,0,SEEK_END);
+        // fputs(skuPrice,fp);
+        return 1;
+    }
+    /* 
+    open file 
+    compare provided SKU with current SKUs
+        if unique 
+            add to file 
+            update number of products on top of the file
+            return 1
+        otherwise 
+            return 0
+        print error or success message in the mainMenu
+
+    */
+ 
+
+        // char block[128];
+        // int numProducts = fgets(block, sizeof(block), fp);
+        // int items  = atoi(block); 
+        // printf("items:%d\n",items);
+        // char *ptr;
+        // // printf("items:%d\n", items);
+        // for (int i= 0 ; i<items;i++){
+        //     if (fgets(block,sizeof(block), fp) !=NULL)
+        //     {
+        //         char * token = strtok(block, " ");
+        // //         if (sku == atoi(token)){
+        // //             while( token != NULL ) {
+        // //                 // printf( "%s:", token ); //printing each token
+        // //                 token = strtok(NULL, " ");
+        // //                 // printf( "%s\n", token );
+        // //                 price = strtod(token,&ptr);
+        // //                 break;
+        // //             }
+        // //         }
+        //     }
+        // }
+
     return 0;
 }
 
