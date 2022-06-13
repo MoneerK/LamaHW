@@ -139,7 +139,7 @@ int mainMenu() {
         }
         break;
     case 2:
-        /* Find Nearest shop\n\ */
+       
         double price;
         printf("what is the price:");
         scanf("%lf", &price);
@@ -150,16 +150,16 @@ int mainMenu() {
         // printf("distance:%lf\n",euclideanDistance(3.0,2.0,5.0,4.0));
         break;
     case 4:
-        /* Find Nearest shop\n\ */
+    
         // printf("%d\n",isOnDiscount(509448));
         printf("%lf",getPriceBySku(374612));
 
         break;
     case 5:
-        /* Find Nearest shop\n\ */
+   
         break;
     case 6:
-        /* Find Nearest shop\n\ */
+   
         break;
 
     
@@ -220,6 +220,54 @@ double findNearestShop(int distType) {
     Takes into account the discounted products in the DISCOUNTED constant array.
 */
 void listProductsCheaperThan(double price) {
+    FILE *fp = fopen(FILE_NAME, "r");
+    if(fp == NULL) {
+        perror("Unable to open file");
+        exit(1);
+    }
+    else printf("File open\n");
+
+    char block[128];
+    fgets(block, sizeof(block), fp);
+    int items  = atoi(block); 
+    int productSKU[items];
+    double productPrice[items];  
+    char *ptr;
+    // printf("items:%d\n", items);
+    for (int i= 0 ; i<items;i++){
+        if (fgets(block,sizeof(block), fp) !=NULL)
+        {
+            char * token = strtok(block, " ");
+            // printf("%s\n",token);
+                while( token != NULL ) {
+                    // printf( "%s:", token ); //printing each token
+                    productPrice[i] = strtod(strtok(NULL, " "),&ptr);
+                    // printf( "%lf\t", productPrice[i] );
+                    productSKU[i] = atoi(token);
+                    // printf( "%d\n", productSKU[i] );
+                    break;
+                }
+        }
+    }
+    for(int i=0; i < items; i++)
+    {
+        
+            if (isOnDiscount(productSKU[i]) == 1)
+            {
+                double dblDiscountedPrice = discountedPrice(getPriceBySku(productSKU[i]));
+                if( dblDiscountedPrice< price)
+                {
+                    printf( "%d\t", productSKU[i] );
+                    printf( "%lf\n", dblDiscountedPrice );
+                }
+            }else if (productPrice[i] < price)
+            {
+                printf( "%d\t", productSKU[i] );
+                printf( "%lf\n", productPrice[i] );
+            }
+    }
+    // if (price == -1.0) printf("SKU not found\n"); 
+    fclose(fp);
     return;
 }
 
@@ -326,23 +374,23 @@ double getPriceBySku(int sku) {
         perror("Unable to open file");
         exit(1);
     }
-    else printf("File open\n");
+    // else printf("File open\n");
 
     char block[128];
     fgets(block, sizeof(block), fp);
     int items  = atoi(block); 
     double price = -1.0;   
     char *ptr;
-    printf("items:%d\n", items);
+    // printf("items:%d\n", items);
     for (int i= 0 ; i<items;i++){
         if (fgets(block,sizeof(block), fp) !=NULL)
         {
             char * token = strtok(block, " ");
             if (sku == atoi(token)){
                 while( token != NULL ) {
-                    printf( "%s:", token ); //printing each token
+                    // printf( "%s:", token ); //printing each token
                     token = strtok(NULL, " ");
-                    printf( "%s\n", token );
+                    // printf( "%s\n", token );
                     price = strtod(token,&ptr);
                     break;
                 }
