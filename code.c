@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -96,7 +98,7 @@ int main() {
     If the user enters any other number, PRINT "Invalid Choice" and RETURN 0.
 */
 int mainMenu() {
-    int myNum;
+    int option;
     do{ 
         printf("Welcome! Please choose one of the following options [1-6]:\n\
         1. Find Nearest shop\n\
@@ -105,12 +107,66 @@ int mainMenu() {
         4. Process a Purchase\n\
         5. Draw a figure of the prices\n\
         6. Exit\n");
-        if (scanf("%d", &myNum) != 1){
+        if (scanf("%d", &option) != 1){
             printf("Input is not an integer, please try again.");
+            break;
+        } else if ((option <1) && (option>6)){
+            printf("The number is not within the accepted range, please try again.");
             continue;
-        };
+        }
     } 
-    while ((myNum <1) || (myNum >6));
+    while ((option <1) || (option >6));
+
+    switch (option)
+    {
+    case 1:
+        /* Find Nearest shop\n\ */
+        char strDist[15];
+        int distType;
+        double nearShop;
+        printf("Enter the distance measure you would like to use:\n");
+        printf("Type 'euclidean' for Euclidean Distance\n");
+        printf("Type 'manhattan' for Manhattan Distance\n");
+        scanf("%s",strDist);
+        if (strcmp(strDist, "euclidean")) distType = 2;
+        else if (strcmp(strDist, "manhattan")) distType = 1;
+        else distType = 0;
+        if (distType != 0){
+            nearShop = findNearestShop(distType);
+            printf("NearestShop is: %f m\n",nearShop);
+        } else {
+            printf("Wrong distance type\n");
+        }
+        break;
+    case 2:
+        /* Find Nearest shop\n\ */
+        double price;
+        printf("what is the price:");
+        scanf("%lf", &price);
+        printf("products cheaper than the price:%lf are:\n",price);
+        listProductsCheaperThan(price);
+        break;
+    case 3:
+        // printf("distance:%lf\n",euclideanDistance(3.0,2.0,5.0,4.0));
+        break;
+    case 4:
+        /* Find Nearest shop\n\ */
+        // printf("%d\n",isOnDiscount(509448));
+        printf("%lf",getPriceBySku(374612));
+
+        break;
+    case 5:
+        /* Find Nearest shop\n\ */
+        break;
+    case 6:
+        /* Find Nearest shop\n\ */
+        break;
+
+    
+    default:
+        printf("Error value:%d:", option);
+        break;
+    }
     
     //  printf("%d\n",myNum);
     return 1;
@@ -129,8 +185,32 @@ int mainMenu() {
     It RETURNS the distance of the closest shop to the store. Remember that the store
     is at location (SHOP_LOCATION_X, SHOP_LOCATION_Y) that are as constants defined above
 */
-double findNearestShop() {
-    return 0.0;
+double "Moneer"(int distType) {
+        int index = 0, numShops = 0;
+        double dblShopCordX,dblShopCordY, nearShop;
+        printf("Enter number of shops:\n");
+        scanf("%d", &numShops);
+        double arrShopXCoord[numShops];
+        double arrShopYCoord[numShops];
+        double arrDistance[numShops];
+        for (int i=0; i< numShops; i++){
+            printf("Enter X Coordination for shop#%d:\n", i);
+            scanf("%lf", &arrShopXCoord[i]);
+            printf("Enter Y Coordination for shop#%d:\n", i);
+            scanf("%lf", &arrShopYCoord[i]);
+            if (distType == 1) arrDistance[i] = euclideanDistance (SHOP_LOCATION_X, SHOP_LOCATION_Y, arrShopXCoord[i],arrShopYCoord[i]);
+            else  arrDistance[i] = manhattanDistance(SHOP_LOCATION_X, SHOP_LOCATION_Y, arrShopXCoord[i],arrShopYCoord[i]);
+            
+        }
+        double minDis = arrDistance[0];
+        for (int i=1; i< numShops; i++){
+            if(arrDistance[i] < minDis){
+                minDis = arrDistance[i];
+                index = i;
+            }     
+        }
+        printf("Near Shop number : %d\n", index);
+        return minDis;
 }
 
 
@@ -200,7 +280,10 @@ void drawPrices(int numOfProducts, int productSkus[]) {
     RETURNS the Manhattan Distance between 2 points (x1, y1) and (x2, y2)
 */
 double manhattanDistance(double x1, double y1, double x2, double y2) {
-    return 0.0;
+    // |y2-y1| + |x2-x1|
+    printf("manhattanDistance ditance %lf: %lf\n", x2, y2);
+    int dist = abs(y2-y1)+ abs(x2-x1);
+    return (double)dist;
 }
 
 
@@ -208,7 +291,8 @@ double manhattanDistance(double x1, double y1, double x2, double y2) {
     RETURNS the Euclidean Distance between 2 points (x1, y1) and (x2, y2)
 */
 double euclideanDistance(double x1, double y1, double x2, double y2) {
-    return 0.0;
+     printf("euclideanDistance ditance %lf: %lf\n", x2, y2);
+    return sqrt(pow((y2-y1),2)+pow((x2-x1),2));
 }
 
 
@@ -216,6 +300,9 @@ double euclideanDistance(double x1, double y1, double x2, double y2) {
     RETURNS 1 if the passed SKU is on discount, otherwise RETURNS 0
 */
 int isOnDiscount(int sku) {
+    for (int i =0; i< sizeof(DISCOUNTED); i++){
+        if (sku == DISCOUNTED[i]) return 1;
+    }   
     return 0;
 }
 
@@ -224,7 +311,7 @@ int isOnDiscount(int sku) {
     RETURNS the price after a 15% sale.
 */
 double discountedPrice(double price) {
-    return 0;
+    return (price *0.85);
 }
 
 
@@ -234,7 +321,38 @@ double discountedPrice(double price) {
     Takes into account the discounted products in the DISCOUNTED constant array.
 */
 double getPriceBySku(int sku) {
-    return 0.0;
+    
+    FILE *fp = fopen(FILE_NAME, "r");
+    if(fp == NULL) {
+        perror("Unable to open file");
+        exit(1);
+    }
+    else printf("File open\n");
+
+    char block[128];
+    fgets(block, sizeof(block), fp);
+    int items  = atoi(block); 
+    double price = -1.0;   
+    char *ptr;
+    printf("items:%d\n", items);
+    for (int i= 0 ; i<items;i++){
+        if (fgets(block,sizeof(block), fp) !=NULL)
+        {
+            char * token = strtok(block, " ");
+            if (sku == atoi(token)){
+                while( token != NULL ) {
+                    printf( "%s:", token ); //printing each token
+                    token = strtok(NULL, " ");
+                    printf( "%s\n", token );
+                    price = strtod(token,&ptr);
+                    break;
+                }
+            }
+        }
+    }
+    // if (price == -1.0) printf("SKU not found\n"); 
+    fclose(fp);
+    return price;
 }
 
 
