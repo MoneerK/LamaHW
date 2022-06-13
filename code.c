@@ -186,7 +186,7 @@ int mainMenu() {
     is at location (SHOP_LOCATION_X, SHOP_LOCATION_Y) that are as constants defined above
 */
 double findNearestShop(int distType) {
-        int index = 0, numShops = 0;
+        int nearestShopIndex = 0, numShops = 0;
         double dblShopCordX,dblShopCordY, nearShop;
         printf("Enter number of shops:\n");
         scanf("%d", &numShops);
@@ -200,16 +200,15 @@ double findNearestShop(int distType) {
             scanf("%lf", &arrShopYCoord[i]);
             if (distType == 1) arrDistance[i] = euclideanDistance (SHOP_LOCATION_X, SHOP_LOCATION_Y, arrShopXCoord[i],arrShopYCoord[i]);
             else  arrDistance[i] = manhattanDistance(SHOP_LOCATION_X, SHOP_LOCATION_Y, arrShopXCoord[i],arrShopYCoord[i]);
-            
         }
         double minDis = arrDistance[0];
         for (int i=1; i< numShops; i++){
             if(arrDistance[i] < minDis){
                 minDis = arrDistance[i];
-                index = i;
+                nearestShopIndex = i;
             }     
         }
-        printf("Near Shop number : %d\n", index);
+        printf("Near Shop number : %d\n", nearestShopIndex);
         return minDis;
 }
 
