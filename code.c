@@ -392,7 +392,6 @@ void drawPrices(int numOfProducts, int productSkus[]) {
     RETURNS the Manhattan Distance between 2 points (x1, y1) and (x2, y2)
 */
 double manhattanDistance(double x1, double y1, double x2, double y2) {
-    // |y2-y1| + |x2-x1|
     printf("manhattanDistance ditance %lf: %lf\n", x2, y2);
     int dist = abs(y2-y1)+ abs(x2-x1);
     return (double)dist;
@@ -403,7 +402,7 @@ double manhattanDistance(double x1, double y1, double x2, double y2) {
     RETURNS the Euclidean Distance between 2 points (x1, y1) and (x2, y2)
 */
 double euclideanDistance(double x1, double y1, double x2, double y2) {
-     printf("euclideanDistance ditance %lf: %lf\n", x2, y2);
+    printf("euclideanDistance ditance %lf: %lf\n", x2, y2);
     return sqrt(pow((y2-y1),2)+pow((x2-x1),2));
 }
 
