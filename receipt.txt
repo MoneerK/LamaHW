@@ -1,0 +1,5 @@
+Customer purchased 2 items:
+- 31402 1.20
+- 31402 1.20
+===============
+Total: 2.40

@@ -165,9 +165,17 @@ int mainMenu() {
     
         break;
     case 4:
-    
-        // printf("%d\n",isOnDiscount(509448));
-        printf("%lf\n",getPriceBySku(374612));
+        int numItems;
+        printf("how many items?\n");
+        scanf("%d",&numItems);
+        int items[100];
+
+        for(int i =0; i<numItems; i++)
+        {
+            printf("enter the SKU of item #%d: ", i+1);
+            scanf("%d",&items[i]);
+        }
+        processPurchase(numItems,items);
 
         break;
     case 5:
@@ -346,7 +354,18 @@ int addProduct(int sku, double price) {
 
     return 0;
 }
-
+// int quantityOfItem(int numOfItems,int itemSkus[], int targetSku){
+//     int counter = 0;
+//     for (int i =0;i < numOfItems; i++)
+//     {
+//         if (itemSkus[i]== targetSku)
+//         {
+//             counter++;
+//             itemSkus[i] =0;
+//         }
+//     }
+//     return counter;
+// }
 
 /*
     Accepts the number of items the customer is buying, and an array of SKUs
@@ -368,6 +387,55 @@ int addProduct(int sku, double price) {
 
 */
 void processPurchase(int numOfItems, int itemSkus[]) {
+    double totalPrice = 0.0;
+    int purQuant[numOfItems],purSku[numOfItems];
+    int numProcess = 1; 
+
+    for (int i =0; i<numOfItems; i++)
+    {
+        for (int j=0 ; j<numOfItems;j++)
+        {
+            if (itemSkus[i] == purSku[j]){
+                purQuant[i]++; 
+                printf("==\n");
+
+            }
+            else {
+                purSku[i] = itemSkus[i];
+                purQuant[i]= 1; 
+                numProcess ++;
+                printf("!=\n");
+            }
+        }
+    }
+
+    for (int i= 0;i < numProcess; i++){
+        printf("item: %d\t quantity: %d\n",purSku[i],purQuant[i]);
+    }
+    FILE *fp = fopen("receipt.txt", "w");
+    if(fp == NULL) {
+        perror("Unable to open file");
+        exit(1);
+    }
+
+    printf("Processing purchase %d\n", numOfItems);
+    fprintf(fp, "Customer purchased %d items:\n",numOfItems);
+    for(int i = 0; i< numOfItems;i++)
+    {
+        // for (int j=i; j<numOfItems -1; j++)
+        // {
+            
+        // }
+        printf("item...%d %.2lf\n",itemSkus[i],getPriceBySku(itemSkus[i]));
+        fprintf(fp, "- %d %.2lf\n", itemSkus[i],getPriceBySku(itemSkus[i]));
+        totalPrice+= getPriceBySku(itemSkus[i]);
+        // printf("quant: %d\n",quantityOfItem(numOfItems, itemSkus[numOfItems],itemSkus[i]));    
+    }
+    
+    fprintf(fp, "===============\n");
+    fprintf(fp, "Total: %.2lf",totalPrice);
+
+    fclose(fp);
     return;
 }
 
